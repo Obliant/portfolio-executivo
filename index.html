@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project Track — Visão Executiva</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F5F3EE;--surface:#FFF;--surface2:#EEECE7;
+  --border:rgba(0,0,0,0.08);--border-md:rgba(0,0,0,0.14);
+  --text:#1A1916;--text2:#6B6860;--text3:#A5A39E;
+  --accent:#2D6A4F;--accent-l:#D8EDDF;
+  --warn:#B45309;--warn-l:#FEF3C7;
+  --danger:#B91C1C;--danger-l:#FEE2E2;
+  --blue:#1D4ED8;--blue-l:#DBEAFE;
+  --purple:#6D28D9;--purple-l:#EDE9FE;
+  --navy1:#0B2A4A;--navy2:#123E6B;
+  --r:10px;--rl:16px;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line-height:1.5}
+
+/* ACCESS GATE */
+/* START / WELCOME SCREEN */
+.start{position:fixed;inset:0;z-index:900;background:linear-gradient(165deg,var(--navy1),var(--navy2));display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px}
+.start.hidden{display:none}
+.start .brand{height:34px;width:auto;max-width:230px;object-fit:contain;margin-bottom:42px;opacity:.95}
+.start .eyebrow{font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#6EE7B7;margin-bottom:16px}
+.start h1{font-size:38px;font-weight:600;line-height:1.14;color:#fff;margin-bottom:16px;max-width:640px}
+.start p{font-size:15px;color:rgba(255,255,255,.6);max-width:470px;line-height:1.65;margin-bottom:38px}
+.start-btn{display:inline-flex;align-items:center;gap:9px;padding:14px 32px;font-size:15px;font-weight:600;font-family:inherit;border:none;border-radius:99px;background:#fff;color:var(--navy1);cursor:pointer;transition:transform .15s,box-shadow .15s}
+.start-btn:hover{transform:translateY(-1px);box-shadow:0 10px 28px rgba(0,0,0,.28)}
+.start .foot{position:absolute;bottom:30px;font-size:12px;color:rgba(255,255,255,.4)}
+@media(max-width:600px){.start h1{font-size:28px}}
+
+/* SHELL */
+.shell{display:flex;min-height:100vh}
+.sidebar{width:230px;min-height:100vh;background:linear-gradient(170deg,var(--navy1),var(--navy2));color:#fff;display:flex;flex-direction:column;padding:24px 0;position:fixed;top:0;left:0;bottom:0;z-index:100}
+.sidebar-logo{padding:0 22px 18px;border-bottom:1px solid rgba(255,255,255,0.1);margin-bottom:10px}
+.sidebar-logo img{height:24px;width:auto;max-width:150px;object-fit:contain;display:block;margin-bottom:10px}
+.sidebar-logo h1{font-size:13px;font-weight:600;letter-spacing:.05em;color:rgba(255,255,255,.95)}
+.sidebar-logo p{font-size:11px;color:rgba(255,255,255,.45);margin-top:2px;font-family:'DM Mono',monospace}
+.nav{margin-top:6px}
+.nav-item{display:flex;align-items:center;gap:11px;padding:10px 22px;font-size:13px;color:rgba(255,255,255,.6);cursor:pointer;border-left:2px solid transparent;transition:all .15s}
+.nav-item:hover{color:#fff;background:rgba(255,255,255,.06)}
+.nav-item.active{color:#fff;border-left-color:#6EE7B7;background:rgba(255,255,255,.08)}
+.nav-item svg{width:16px;height:16px;flex-shrink:0}
+.sidebar-foot{margin-top:auto;padding:16px 22px 0;border-top:1px solid rgba(255,255,255,.1)}
+.sidebar-foot .who{font-size:12px;color:rgba(255,255,255,.85);font-weight:500}
+.sidebar-foot .role{font-size:11px;color:rgba(255,255,255,.45)}
+.sidebar-foot a{display:inline-block;margin-top:10px;font-size:11px;color:rgba(255,255,255,.5);text-decoration:none;cursor:pointer}
+.sidebar-foot a:hover{color:#fff}
+
+.main{margin-left:230px;flex:1;padding:30px 36px;min-height:100vh}
+.topbar{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:12px}
+.topbar h2{font-size:22px;font-weight:600}
+.topbar-sub{font-size:13px;color:var(--text2);margin-top:2px}
+.asof{font-size:12px;color:var(--text3);font-family:'DM Mono',monospace}
+
+/* FILTERS */
+.filters{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:18px 0 22px;padding:14px 16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--rl)}
+.filters .flabel{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text3)}
+.filters select{padding:7px 11px;font-size:13px;font-family:inherit;border:1px solid var(--border-md);border-radius:var(--r);background:var(--bg);color:var(--text);outline:none;cursor:pointer}
+.filters select:focus{border-color:var(--accent)}
+.filters .clear{margin-left:auto;font-size:12px;color:var(--accent);cursor:pointer;font-weight:500;background:none;border:none}
+.filters .clear:hover{text-decoration:underline}
+
+/* SECTIONS */
+.section-title{font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--text);margin:28px 0 14px;display:flex;align-items:center;gap:8px}
+.section-title .desc{font-size:12px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--text3)}
+.kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:18px 20px}
+.kpi.accent{background:linear-gradient(160deg,var(--navy1),var(--navy2));border:none}
+.kpi-label{font-size:11px;color:var(--text3);font-weight:500;margin-bottom:7px}
+.kpi.accent .kpi-label{color:rgba(255,255,255,.5)}
+.kpi-value{font-size:30px;font-weight:600;font-family:'DM Mono',monospace;line-height:1}
+.kpi.accent .kpi-value{color:#fff}
+.kpi-sub{font-size:11px;color:var(--text3);margin-top:6px}
+.kpi.accent .kpi-sub{color:rgba(255,255,255,.4)}
+.kpi-tag{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;margin-top:7px;padding:2px 8px;border-radius:99px}
+.t-ok{background:var(--accent-l);color:var(--accent)}
+.t-warn{background:var(--warn-l);color:var(--warn)}
+.t-bad{background:var(--danger-l);color:var(--danger)}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.grid-2-1{display:grid;grid-template-columns:1.4fr 1fr;gap:16px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:20px 22px}
+.card-title{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin-bottom:16px}
+.chart-wrap{position:relative;height:240px}
+.legend{display:flex;flex-direction:column;gap:7px;margin-top:14px}
+.legend-row{display:flex;align-items:center;justify-content:space-between;font-size:12px}
+.legend-row .l{display:flex;align-items:center;gap:7px}
+.dot{width:10px;height:10px;border-radius:3px;display:inline-block}
+
+/* MILESTONE LIST */
+.ms-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border)}
+.ms-row:last-child{border-bottom:none}
+.ms-name{font-size:13px;font-weight:500}
+.ms-meta{font-size:12px;color:var(--text2);margin-top:1px}
+.ms-when{text-align:right}
+.ms-date{font-size:13px;font-family:'DM Mono',monospace;font-weight:500}
+.ms-days{font-size:11px;margin-top:1px}
+
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:500;padding:3px 9px;border-radius:99px;white-space:nowrap}
+.b-ok{background:var(--accent-l);color:var(--accent)}
+.b-warn{background:var(--warn-l);color:var(--warn)}
+.b-bad{background:var(--danger-l);color:var(--danger)}
+.b-blue{background:var(--blue-l);color:var(--blue)}
+.b-gray{background:#ECEAE4;color:var(--text2)}
+.b-dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+
+/* RISK HEATMAP */
+.heat{display:grid;grid-template-columns:auto repeat(3,1fr);gap:6px;margin-top:6px}
+.heat .axis{display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.04em}
+.heat .cell{aspect-ratio:1.7;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-weight:600}
+.heat .cell .n{font-size:20px;font-family:'DM Mono',monospace;line-height:1}
+.heat .cell .c{font-size:9px;opacity:.85;margin-top:2px;text-transform:uppercase;letter-spacing:.05em}
+.heat .rowlab{display:flex;align-items:center;justify-content:flex-end;padding-right:8px;font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;text-align:right}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text3);padding:9px 12px;border-bottom:1px solid var(--border);text-align:left;white-space:nowrap;cursor:pointer;user-select:none}
+.tbl th:hover{color:var(--text)}
+.tbl td{padding:11px 12px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tbody tr:hover td{background:var(--bg)}
+.mono{font-family:'DM Mono',monospace;font-size:12px}
+.prog{height:6px;background:var(--surface2);border-radius:3px;overflow:hidden;min-width:54px}
+.prog-fill{height:100%;border-radius:3px}
+.rag{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:7px;vertical-align:middle}
+
+.empty{text-align:center;padding:40px;color:var(--text3);font-size:13px}
+::-webkit-scrollbar{width:7px;height:7px}
+::-webkit-scrollbar-thumb{background:var(--border-md);border-radius:3px}
+
+@media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(2,1fr)}.grid-2,.grid-2-1,.grid-3{grid-template-columns:1fr}}
+@media(max-width:760px){.sidebar{display:none}.main{margin-left:0;padding:20px}}
+@media print{
+  .sidebar,.filters,.no-print,.start{display:none!important}
+  .main{margin-left:0!important;padding:0!important}
+  .card,.kpi{break-inside:avoid}
+  body{background:#fff}
+}
+</style>
+</head>
+<body>
+
+<!-- TELA DE INÍCIO -->
+<div class="start" id="start">
+  <img class="brand" src="https://obliant.com.br/wp-content/uploads/2025/09/Logo.png" alt="Obliant" onerror="this.style.display='none'">
+  <div class="eyebrow">Project Track · PMO Obliant</div>
+  <h1>Visão Executiva de Portfólio</h1>
+  <p>Acompanhamento consolidado de todos os projetos da Obliant — saúde, prazos, capacidade e riscos em uma só tela.</p>
+  <button class="start-btn" onclick="enterApp()">Acessar painel →</button>
+  <div class="foot">Dados de demonstração · pronto para conectar ao Supabase</div>
+</div>
+
+<!-- APP -->
+<div class="shell" id="app" style="display:none">
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <img src="https://obliant.com.br/wp-content/uploads/2025/09/Logo.png" alt="Obliant" onerror="this.style.display='none'">
+      <h1>Project Track</h1>
+      <p>visão executiva</p>
+    </div>
+    <div class="nav">
+      <div class="nav-item active" data-sec="saude" onclick="goSec('saude')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Saúde do portfólio</div>
+      <div class="nav-item" data-sec="prazo" onclick="goSec('prazo')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Prazo &amp; entregas</div>
+      <div class="nav-item" data-sec="horas" onclick="goSec('horas')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Horas &amp; capacidade</div>
+      <div class="nav-item" data-sec="riscos" onclick="goSec('riscos')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Riscos</div>
+      <div class="nav-item" data-sec="carteira" onclick="goSec('carteira')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7h-3V5a2 2 0 00-2-2H9a2 2 0 00-2 2v2H4a1 1 0 00-1 1v11a1 1 0 001 1h16a1 1 0 001-1V8a1 1 0 00-1-1z"/></svg>Carteira completa</div>
+      <div class="nav-item" data-sec="glossario" onclick="goSec('glossario')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>Entenda os indicadores</div>
+    </div>
+    <div class="sidebar-foot">
+      <div class="who">Liderança</div>
+      <div class="role">Visão executiva</div>
+    </div>
+  </nav>
+
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <h2 id="page-title">Saúde do portfólio</h2>
+        <div class="topbar-sub" id="page-sub">Como está a carteira de projetos da Obliant agora.</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <button class="no-print" onclick="exportExcel()" style="display:inline-flex;align-items:center;gap:6px;padding:7px 13px;font-size:12px;font-weight:500;font-family:inherit;border:1px solid var(--border-md);border-radius:99px;background:var(--surface);color:var(--text);cursor:pointer">⭳ Excel</button>
+        <button class="no-print" onclick="window.print()" style="display:inline-flex;align-items:center;gap:6px;padding:7px 13px;font-size:12px;font-weight:500;font-family:inherit;border:1px solid var(--border-md);border-radius:99px;background:var(--surface);color:var(--text);cursor:pointer">🖨 Imprimir / PDF</button>
+        <div class="asof" id="asof"></div>
+      </div>
+    </div>
+
+    <div class="filters">
+      <span class="flabel">Filtrar:</span>
+      <select id="f-cliente" onchange="applyFilters()"><option value="">Todos os clientes</option></select>
+      <select id="f-pm" onchange="applyFilters()"><option value="">Todos os PMs</option></select>
+      <select id="f-status" onchange="applyFilters()">
+        <option value="">Todos os status</option>
+        <option value="no-prazo">No prazo</option>
+        <option value="em-risco">Em risco</option>
+        <option value="atrasado">Atrasado</option>
+        <option value="critico">Crítico</option>
+        <option value="concluido">Concluído</option>
+      </select>
+      <button class="clear" onclick="clearFilters()">Limpar filtros</button>
+    </div>
+
+    <div id="sections"></div>
+  </main>
+</div>
+
+<script>
+/* ============================================================================
+   FONTE DE DADOS — É AQUI QUE O SUPABASE ENTRA DEPOIS
+   ----------------------------------------------------------------------------
+   Hoje esta função devolve dados de exemplo, só para você ver o painel
+   funcionando e mostrar para a liderança. Quando a nuvem estiver montada,
+   trocamos SÓ o conteúdo desta função por uma leitura do Supabase
+   (algo como: const { data } = await supabase.from('projetos').select()).
+   Nada do resto do dashboard muda.
+   ========================================================================== */
+function getPortfolioData(){
+  return [
+    {id:1, nome:'Implantação ERP TOTVS', cliente:'Teleinfo', pm:'Juliana', status:'em-risco',
+     spi:0.91, pctReal:62, pctPlan:68, horasForecast:1200, horasReal:790, valorHora:85,
+     goLiveBaseline:'2026-07-08', goLiveAtual:'2026-07-15',
+     proxMarco:{nome:'Homologação Financeiro (MIT041)', data:'2026-07-02'},
+     riscos:[{prob:'alta',impacto:'alto'},{prob:'media',impacto:'alto'}]},
+    {id:2, nome:'Migração Fiscal SPED', cliente:'Teleinfo', pm:'Juliana', status:'no-prazo',
+     spi:1.04, pctReal:48, pctPlan:46, horasForecast:540, horasReal:250, valorHora:90,
+     goLiveBaseline:'2026-09-30', goLiveAtual:'2026-09-30',
+     proxMarco:{nome:'Validação de notas piloto', data:'2026-07-20'},
+     riscos:[{prob:'baixa',impacto:'medio'}]},
+    {id:3, nome:'Implantação RH & Folha', cliente:'Nordeste Alimentos', pm:'João', status:'atrasado',
+     spi:0.78, pctReal:40, pctPlan:58, horasForecast:980, horasReal:760, valorHora:80,
+     goLiveBaseline:'2026-06-30', goLiveAtual:'2026-08-12',
+     proxMarco:{nome:'Go-Live Folha (piloto)', data:'2026-07-05'},
+     riscos:[{prob:'alta',impacto:'alto'},{prob:'alta',impacto:'medio'}]},
+    {id:4, nome:'BI & Indicadores Gerenciais', cliente:'Nordeste Alimentos', pm:'João', status:'no-prazo',
+     spi:1.01, pctReal:30, pctPlan:30, horasForecast:420, horasReal:120, valorHora:95,
+     goLiveBaseline:'2026-10-15', goLiveAtual:'2026-10-15',
+     proxMarco:{nome:'Aprovação do modelo de dados', data:'2026-08-01'},
+     riscos:[{prob:'media',impacto:'medio'}]},
+    {id:5, nome:'Reestruturação Compras', cliente:'Construtora Vale', pm:'Ana', status:'critico',
+     spi:0.69, pctReal:35, pctPlan:64, horasForecast:760, horasReal:710, valorHora:82,
+     goLiveBaseline:'2026-06-20', goLiveAtual:'2026-08-30',
+     proxMarco:{nome:'Replanejamento com sponsor', data:'2026-06-27'},
+     riscos:[{prob:'alta',impacto:'alto'},{prob:'alta',impacto:'alto'},{prob:'media',impacto:'alto'}]},
+    {id:6, nome:'Implantação Financeiro', cliente:'Construtora Vale', pm:'Ana', status:'em-risco',
+     spi:0.88, pctReal:55, pctPlan:62, horasForecast:650, horasReal:430, valorHora:85,
+     goLiveBaseline:'2026-08-10', goLiveAtual:'2026-08-24',
+     proxMarco:{nome:'Carga inicial de saldos', data:'2026-07-12'},
+     riscos:[{prob:'media',impacto:'medio'}]},
+    {id:7, nome:'Projeto Gestão de Contratos', cliente:'Aurora Saúde', pm:'Juliana', status:'no-prazo',
+     spi:1.07, pctReal:72, pctPlan:67, horasForecast:380, horasReal:240, valorHora:88,
+     goLiveBaseline:'2026-07-31', goLiveAtual:'2026-07-29',
+     proxMarco:{nome:'Treinamento usuários-chave', data:'2026-07-08'},
+     riscos:[]},
+    {id:8, nome:'Onboarding Fiscal 2025', cliente:'Aurora Saúde', pm:'João', status:'concluido',
+     spi:1.0, pctReal:100, pctPlan:100, horasForecast:300, horasReal:312, valorHora:80,
+     goLiveBaseline:'2026-05-15', goLiveAtual:'2026-05-18',
+     proxMarco:null,
+     riscos:[]}
+  ];
+}
+
+/* ====== CONFIG / HELPERS ====== */
+var TODAY = new Date();
+var STATUS = {
+  'no-prazo':  {lbl:'No prazo',  color:'#2D6A4F', badge:'b-ok'},
+  'em-risco':  {lbl:'Em risco',  color:'#B45309', badge:'b-warn'},
+  'atrasado':  {lbl:'Atrasado',  color:'#DC6803', badge:'b-warn'},
+  'critico':   {lbl:'Crítico',   color:'#B91C1C', badge:'b-bad'},
+  'concluido': {lbl:'Concluído', color:'#1D4ED8', badge:'b-blue'}
+};
+var ALL = [], VIEW = [], currentSec = 'saude', charts = {};
+
+function fmtDate(s){ if(!s) return '—'; var p=s.split('-'); return p[2]+'/'+p[1]+'/'+p[0]; }
+function daysUntil(s){ if(!s) return null; return Math.round((new Date(s+'T00:00:00') - TODAY)/86400000); }
+function devioDias(p){ return Math.round((new Date(p.goLiveAtual+'T00:00:00') - new Date(p.goLiveBaseline+'T00:00:00'))/86400000); }
+function realizadas(p){ return p.horasReal||0; }
+function fmtBRL(v){ return 'R$ '+Math.round(v).toLocaleString('pt-BR'); }
+function uniq(arr){ return [...new Set(arr)]; }
+
+/* ====== ACCESS GATE ====== */
+function tryEnter(){
+  var v = document.getElementById('gate-pass').value.trim();
+  if(v.toLowerCase() === 'obliant2026'){
+    document.getElementById('gate').classList.add('hidden');
+    document.getElementById('app').style.display='flex';
+    init();
+  } else {
+    document.getElementById('gate-err').textContent = 'Senha incorreta. Tente novamente.';
+  }
+}
+function lock(){
+  document.getElementById('app').style.display='none';
+  document.getElementById('gate').classList.remove('hidden');
+  document.getElementById('gate-pass').value='';
+  document.getElementById('gate-err').textContent='';
+}
+
+/* ====== INIT ====== */
+function init(){
+  ALL = getPortfolioData();
+  document.getElementById('asof').textContent = 'Atualizado em ' + TODAY.toLocaleDateString('pt-BR') + ' · ' + ALL.length + ' projetos';
+  // populate filters
+  var cliSel=document.getElementById('f-cliente'), pmSel=document.getElementById('f-pm');
+  uniq(ALL.map(p=>p.cliente)).sort().forEach(c=>{ var o=document.createElement('option'); o.value=c; o.textContent=c; cliSel.appendChild(o); });
+  uniq(ALL.map(p=>p.pm)).sort().forEach(m=>{ var o=document.createElement('option'); o.value=m; o.textContent=m; pmSel.appendChild(o); });
+  applyFilters();
+}
+
+function clearFilters(){
+  document.getElementById('f-cliente').value='';
+  document.getElementById('f-pm').value='';
+  document.getElementById('f-status').value='';
+  applyFilters();
+}
+function voltarSaude(){
+  document.getElementById('f-cliente').value='';
+  document.getElementById('f-pm').value='';
+  document.getElementById('f-status').value='';
+  goSec('saude');
+  applyFilters();
+}
+function filtroAtivo(){ return document.getElementById('f-cliente').value||document.getElementById('f-pm').value||document.getElementById('f-status').value; }
+function applyFilters(){
+  var c=document.getElementById('f-cliente').value, m=document.getElementById('f-pm').value, s=document.getElementById('f-status').value;
+  VIEW = ALL.filter(p => (!c||p.cliente===c) && (!m||p.pm===m) && (!s||p.status===s));
+  render();
+}
+
+function goSec(sec){
+  currentSec=sec;
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active', n.dataset.sec===sec));
+  var titles={
+    saude:['Saúde do portfólio','Como está a carteira de projetos da Obliant agora.'],
+    prazo:['Prazo & entregas','Estamos entregando no prazo e o que vence em breve.'],
+    horas:['Horas & capacidade','Consumo de horas do portfólio e carga por PM.'],
+    riscos:['Riscos','Onde estão as maiores ameaças da carteira.'],
+    carteira:['Carteira completa','Visão por projeto — nível portfólio, sem detalhe de tarefas.'],
+    glossario:['Entenda os indicadores','O que cada indicador significa e como lê-lo.']
+  };
+  document.getElementById('page-title').textContent=titles[sec][0];
+  document.getElementById('page-sub').textContent=titles[sec][1];
+  document.querySelector('.filters').style.display=(sec==='glossario')?'none':'flex';
+  render();
+}
+
+/* ====== AGGREGATES ====== */
+function agg(list){
+  var n=list.length;
+  var byStatus={}; Object.keys(STATUS).forEach(k=>byStatus[k]=0);
+  list.forEach(p=>byStatus[p.status]++);
+  var ativos=list.filter(p=>p.status!=='concluido');
+  var saudaveis=list.filter(p=>p.status==='no-prazo'||p.status==='concluido').length;
+  var emAtraso=byStatus['atrasado']+byStatus['critico'];
+  // SPI ponderado por forecast de horas (peso = tamanho do projeto)
+  var wsum=0, spisum=0;
+  list.forEach(p=>{ var w=p.horasForecast||1; wsum+=w; spisum+=w*p.spi; });
+  var spiMedio = wsum? spisum/wsum : 1;
+  var desvios = list.map(devioDias);
+  var desvioMedio = n? Math.round(desvios.reduce((a,b)=>a+b,0)/n) : 0;
+  var hF=list.reduce((a,p)=>a+(p.horasForecast||0),0);
+  var hR=list.reduce((a,p)=>a+realizadas(p),0);
+  var custoF=list.reduce((a,p)=>a+(p.horasForecast||0)*(p.valorHora||0),0);
+  var custoR=list.reduce((a,p)=>a+realizadas(p)*(p.valorHora||0),0);
+  var estourando=list.filter(p=>realizadas(p)>p.horasForecast).length;
+  var riscosTot=list.reduce((a,p)=>a+p.riscos.length,0);
+  var riscosCrit=list.reduce((a,p)=>a+p.riscos.filter(r=>r.prob==='alta'&&r.impacto==='alto').length,0);
+  var projComRiscoAlto=list.filter(p=>p.riscos.some(r=>r.prob==='alta'||r.impacto==='alto')).length;
+  // EAC do portfólio — projeção de horas/custo no fim, pela eficiência atual de cada projeto
+  var eacHoras=0,eacCusto=0;
+  list.forEach(p=>{ var f=p.pctReal>0?(p.pctReal/100):null; eacHoras+=f?realizadas(p)/f:(p.horasForecast||0); var cr=realizadas(p)*(p.valorHora||0); eacCusto+=f?cr/f:(p.horasForecast||0)*(p.valorHora||0); });
+  eacHoras=Math.round(eacHoras); eacCusto=Math.round(eacCusto);
+  // CPI médio do portfólio = valor entregue (horas) ÷ horas realizadas
+  var evH=list.reduce((a,p)=>a+((p.pctReal||0)/100)*(p.horasForecast||0),0);
+  var cpiMedio = hR>0 ? evH/hR : 1;
+  return {n,byStatus,ativos:ativos.length,saudaveis,emAtraso,criticos:byStatus['critico'],
+    spiMedio,desvioMedio,hF,hR,saldo:hF-hR,custoF,custoR,estourando,riscosTot,riscosCrit,projComRiscoAlto,eacHoras,eacCusto,cpiMedio};
+}
+
+/* ====== RENDER DISPATCH ====== */
+function render(){
+  Object.values(charts).forEach(c=>{try{c.destroy()}catch(e){}}); charts={};
+  var el=document.getElementById('sections');
+  if(currentSec==='glossario'){ renderGlossario(el); return; }
+  if(!VIEW.length){ el.innerHTML='<div class="empty">Nenhum projeto para os filtros selecionados.</div>'; return; }
+  if(currentSec==='saude') renderSaude(el);
+  else if(currentSec==='prazo') renderPrazo(el);
+  else if(currentSec==='horas') renderHoras(el);
+  else if(currentSec==='riscos') renderRiscos(el);
+  else if(currentSec==='carteira') renderCarteira(el);
+}
+
+/* ====== 1. SAÚDE (cockpit executivo) ====== */
+function renderSaude(el){
+  var a=agg(VIEW);
+  var pctSaudavel=a.n?Math.round((a.saudaveis/a.n)*100):0;
+  var spiTag = a.spiMedio>=1?'t-ok':a.spiMedio>=0.85?'t-warn':'t-bad';
+  var spiLbl = a.spiMedio>=1?'no ritmo':a.spiMedio>=0.85?'leve atraso':'atraso crítico';
+  // ── Saúde geral: veredito único combinando as 3 dimensões ──
+  var lvlPrazo=a.spiMedio>=1?0:a.spiMedio>=0.85?1:2;
+  var lvlHoras=a.estourando===0?0:a.estourando<=2?1:2;
+  var lvlRisco=a.riscosCrit===0?0:a.riscosCrit<=1?1:2;
+  var overall=Math.max(lvlPrazo,lvlHoras,lvlRisco);
+  var HC=[{emo:'🟢',lbl:'Portfólio saudável',c:'var(--accent)',bg:'var(--accent-l)'},
+          {emo:'🟡',lbl:'Requer atenção',c:'var(--warn)',bg:'var(--warn-l)'},
+          {emo:'🔴',lbl:'Situação crítica',c:'var(--danger)',bg:'var(--danger-l)'}];
+  var o=HC[overall], demo=['🟢','🟡','🔴'], dotc=['var(--accent)','var(--warn)','var(--danger)'];
+  function hchip(nome,lvl,val){
+    return '<div style="display:flex;align-items:center;gap:8px;padding:7px 13px;background:var(--surface);border:1px solid var(--border);border-radius:99px;font-size:12px">'
+      +'<span>'+demo[lvl]+'</span><span style="color:var(--text2)">'+nome+'</span>'
+      +'<span style="font-weight:600;color:'+dotc[lvl]+'">'+val+'</span></div>';
+  }
+  var banner='<div style="display:flex;align-items:center;gap:18px;padding:18px 22px;background:'+o.bg+';border-radius:var(--rl);flex-wrap:wrap;margin-bottom:8px">'
+    +'<div style="display:flex;align-items:center;gap:13px">'
+    +'<span style="font-size:32px;line-height:1">'+o.emo+'</span>'
+    +'<div><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:'+o.c+';opacity:.85">Saúde geral da carteira</div>'
+    +'<div style="font-size:19px;font-weight:600;color:'+o.c+'">'+o.lbl+'</div></div></div>'
+    +'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-left:auto">'
+    +hchip('Prazo',lvlPrazo,'SPI '+a.spiMedio.toFixed(2))
+    +hchip('Horas',lvlHoras,a.estourando+' estourando')
+    +hchip('Risco',lvlRisco,a.riscosCrit+' crítico'+(a.riscosCrit===1?'':'s'))
+    +'</div></div>';
+  el.innerHTML = banner
+    +'<div class="kpi-grid">'
+    +kpi('accent','Projetos no portfólio',a.n,'visão consolidada')
+    +kpi('','Em andamento',a.ativos,(a.byStatus['concluido'])+' concluídos')
+    +kpi('','Portfólio saudável',pctSaudavel+'%','no prazo ou concluído','t'+(pctSaudavel>=70?'-ok':pctSaudavel>=50?'-warn':'-bad'),(pctSaudavel>=70?'saudável':'atenção'))
+    +kpi('','Em atraso',a.emAtraso,a.criticos+' em estado crítico','t'+(a.emAtraso===0?'-ok':'-bad'),(a.emAtraso===0?'tudo ok':'requer ação'))
+    +kpi('','SPI médio',a.spiMedio.toFixed(2),'desempenho de prazo',spiTag,spiLbl)
+    +'</div>'
+    +'<div class="section-title">Distribuição da carteira <span class="desc">— o semáforo do portfólio</span></div>'
+    +'<div class="grid-2-1">'
+      +'<div class="card"><div class="card-title">Projetos por status <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text3)">— clique numa fatia para ver os projetos</span></div><div class="chart-wrap"><canvas id="cStatus"></canvas></div></div>'
+      +'<div class="card"><div class="card-title">Precisam de atenção agora <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text3)">— prazo, horas e risco</span></div><div id="atencao"></div></div>'
+    +'</div>';
+  // donut — clicável: leva à Carteira filtrada pelo status clicado
+  var labels=[],data=[],colors=[],keys=[];
+  Object.keys(STATUS).forEach(k=>{ if(a.byStatus[k]>0){ keys.push(k); labels.push(STATUS[k].lbl); data.push(a.byStatus[k]); colors.push(STATUS[k].color);} });
+  charts.cStatus=new Chart(document.getElementById('cStatus'),{type:'doughnut',
+    data:{labels:labels,datasets:[{data:data,backgroundColor:colors,borderWidth:0,hoverOffset:4}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'66%',
+      onClick:function(evt,els){ if(els&&els.length){ document.getElementById('f-status').value=keys[els[0].index]; goSec('carteira'); applyFilters(); } },
+      onHover:function(evt,els){ if(evt&&evt.native&&evt.native.target) evt.native.target.style.cursor=(els&&els.length)?'pointer':'default'; },
+      plugins:{legend:{position:'right',labels:{font:{size:12,family:'DM Sans'},color:'#6B6860',padding:12,usePointStyle:true,pointStyle:'rectRounded'}}}}});
+  // ── atenção multidimensional: status OU estouro de horas OU risco crítico OU go-live replanejado ──
+  var att=[];
+  VIEW.filter(p=>p.status!=='concluido').forEach(p=>{
+    var motivos=[];
+    if(p.status==='critico'||p.status==='atrasado'||p.status==='em-risco') motivos.push({t:STATUS[p.status].lbl,cls:STATUS[p.status].badge});
+    if(realizadas(p)>p.horasForecast) motivos.push({t:'Estourando horas',cls:'b-bad'});
+    if(p.riscos.some(r=>r.prob==='alta'&&r.impacto==='alto')) motivos.push({t:'Risco crítico',cls:'b-bad'});
+    var dev=devioDias(p);
+    if(dev>14) motivos.push({t:'Go-Live +'+dev+'d',cls:'b-warn'});
+    if(motivos.length) att.push({p:p,motivos:motivos});
+  });
+  att.sort((x,y)=> (y.motivos.length-x.motivos.length) || (x.p.spi-y.p.spi));
+  document.getElementById('atencao').innerHTML = att.length? att.map(o=>{
+    var p=o.p;
+    return '<div class="ms-row"><div style="flex:1"><div class="ms-name"><span class="rag" style="background:'+STATUS[p.status].color+'"></span>'+p.nome+'</div>'
+      +'<div class="ms-meta">'+p.cliente+' · '+p.pm+' · SPI '+p.spi.toFixed(2)+'</div>'
+      +'<div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:6px">'+o.motivos.map(m=>'<span class="badge '+m.cls+'"><span class="b-dot"></span>'+m.t+'</span>').join('')+'</div>'
+      +'</div></div>';
+  }).join('') : '<div class="empty" style="padding:24px">Nenhum projeto em alerta. 🎉</div>';
+}
+
+/* ====== 2. PRAZO ====== */
+function renderPrazo(el){
+  var a=agg(VIEW);
+  var spiTag=a.spiMedio>=1?'t-ok':a.spiMedio>=0.85?'t-warn':'t-bad';
+  var dTag=a.desvioMedio<=0?'t-ok':a.desvioMedio<=7?'t-warn':'t-bad';
+  // próximos go-lives e marcos (60 dias), ativos
+  var entregas=[];
+  VIEW.filter(p=>p.status!=='concluido').forEach(p=>{
+    var dg=daysUntil(p.goLiveAtual);
+    if(dg!==null && dg>=-30 && dg<=90) entregas.push({tipo:'Go-Live',nome:p.nome,cliente:p.cliente,pm:p.pm,data:p.goLiveAtual,dias:dg,dev:devioDias(p)});
+    if(p.proxMarco){ var dm=daysUntil(p.proxMarco.data); if(dm!==null && dm>=-15 && dm<=60) entregas.push({tipo:'Marco',nome:p.proxMarco.nome,cliente:p.cliente,pm:p.pm,data:p.proxMarco.data,dias:dm,sub:p.nome}); }
+  });
+  entregas.sort((x,y)=>x.dias-y.dias);
+  var atrasos=VIEW.filter(p=>p.status!=='concluido' && devioDias(p)>0).map(p=>({p:p,dev:devioDias(p)})).sort((x,y)=>y.dev-x.dev);
+  el.innerHTML =
+    '<div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">'
+    +kpi('accent','SPI médio do portfólio',a.spiMedio.toFixed(2),'ponderado por tamanho',spiTag,a.spiMedio>=1?'no ritmo':'atenção')
+    +kpi('','Desvio médio de prazo',(a.desvioMedio>=0?'+':'')+a.desvioMedio+'d','vs. baseline original',dTag,a.desvioMedio<=0?'sem desvio':'atrasando')
+    +kpi('','Go-Lives em 60 dias',entregas.filter(e=>e.tipo==='Go-Live'&&e.dias>=0&&e.dias<=60).length,'entregas próximas')
+    +kpi('','Marcos críticos próximos',entregas.filter(e=>e.tipo==='Marco'&&e.dias>=0).length,'a vencer')
+    +'</div>'
+    +'<div class="section-title">Próximas entregas <span class="desc">— Go-Lives e marcos críticos da carteira</span></div>'
+    +'<div class="card"><div id="entregas-list">'+(
+      entregas.length? entregas.slice(0,12).map(e=>{
+        var dc = e.dias<0?'var(--danger)':e.dias<=7?'var(--warn)':'var(--text2)';
+        var dl = e.dias<0?Math.abs(e.dias)+'d em atraso':e.dias===0?'hoje':'em '+e.dias+'d';
+        return '<div class="ms-row"><div><div class="ms-name">'
+          +'<span class="badge '+(e.tipo==='Go-Live'?'b-blue':'b-gray')+'" style="margin-right:8px"><span class="b-dot"></span>'+e.tipo+'</span>'+e.nome+'</div>'
+          +'<div class="ms-meta">'+e.cliente+' · '+e.pm+(e.sub?' · '+e.sub:'')+(e.dev!==undefined&&e.dev>0?' · <span style="color:var(--warn)">replanejado +'+e.dev+'d</span>':'')+'</div></div>'
+          +'<div class="ms-when"><div class="ms-date">'+fmtDate(e.data)+'</div><div class="ms-days" style="color:'+dc+'">'+dl+'</div></div></div>';
+      }).join('') : '<div class="empty" style="padding:24px">Nenhuma entrega nos próximos 60 dias.</div>'
+    )+'</div></div>'
+    +'<div class="section-title">Maiores atrasos <span class="desc">— projetos com maior desvio vs. baseline original</span></div>'
+    +'<div class="card">'+(
+      atrasos.length? atrasos.slice(0,10).map(function(o){
+        var p=o.p, col=o.dev>14?'var(--danger)':'var(--warn)';
+        return '<div class="ms-row"><div><div class="ms-name"><span class="rag" style="background:'+STATUS[p.status].color+'"></span>'+p.nome+'</div>'
+          +'<div class="ms-meta">'+p.cliente+' · '+p.pm+' · SPI '+p.spi.toFixed(2)+'</div></div>'
+          +'<div class="ms-when"><div class="ms-days mono" style="color:'+col+';font-weight:600;font-size:15px">+'+o.dev+'d</div><div style="font-size:11px;color:var(--text3)">vs. baseline</div></div></div>';
+      }).join('') : '<div class="empty" style="padding:24px">Nenhum projeto atrasado vs. baseline. 🎉</div>'
+    )+'</div>';
+}
+
+/* ====== 3. HORAS & CAPACIDADE ====== */
+function renderHoras(el){
+  var a=agg(VIEW);
+  var consumo=a.hF?Math.round((a.hR/a.hF)*100):0;
+  var temValor=VIEW.some(p=>p.valorHora>0);
+  var desvH=a.eacHoras-a.hF, desvC=a.eacCusto-a.custoF;
+  var eacTag='t'+(desvH<=0?'-ok':desvH<=a.hF*0.1?'-warn':'-bad');
+  var eacKpi = temValor
+    ? kpi('','Projeção de custo (EAC)',fmtBRL(a.eacCusto),'projeção vs '+fmtBRL(a.custoF)+' contratado',eacTag,(desvC>=0?'+':'')+fmtBRL(desvC))
+    : kpi('','Projeção de horas (EAC)',a.eacHoras.toLocaleString('pt-BR')+'h','vs '+a.hF.toLocaleString('pt-BR')+'h contratadas',eacTag,(desvH>=0?'+':'')+desvH+'h');
+  var cpi=a.cpiMedio, cpiTag='t'+(cpi>=1?'-ok':cpi>=0.85?'-warn':'-bad');
+  el.innerHTML =
+    '<div class="kpi-grid" style="grid-template-columns:repeat(auto-fit,minmax(168px,1fr))">'
+    +kpi('accent','Horas realizadas',a.hR.toLocaleString('pt-BR')+'h','de '+a.hF.toLocaleString('pt-BR')+'h forecast')
+    +kpi('','Consumo do portfólio',consumo+'%','do total contratado','t'+(consumo<=100?'-ok':'-bad'),consumo<=100?'dentro':'estourado')
+    +kpi('','Saldo de horas',(a.saldo>=0?'+':'')+a.saldo.toLocaleString('pt-BR')+'h','capacidade restante','t'+(a.saldo>=0?'-ok':'-bad'),a.saldo>=0?'disponível':'estourado')
+    +kpi('','CPI médio',cpi.toFixed(2),'eficiência de esforço · ideal ≥ 1.00',cpiTag,cpi>=1?'eficiente':cpi>=0.85?'leve estouro':'estouro crítico')
+    +eacKpi
+    +kpi('','Projetos estourando',a.estourando,'acima do forecast','t'+(a.estourando===0?'-ok':'-bad'),a.estourando===0?'nenhum':'atenção')
+    +(temValor?kpi('','Custo realizado',fmtBRL(a.custoR),'de '+fmtBRL(a.custoF)):'')
+    +'</div>'
+    +'<div class="section-title">Distribuição &amp; capacidade <span class="desc">— carga por PM e concentração por cliente</span></div>'
+    +'<div class="grid-2">'
+      +'<div class="card"><div class="card-title">Horas por PM — carga do time <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text3)">— clique num PM para ver os projetos</span></div><div class="chart-wrap"><canvas id="cPM"></canvas></div></div>'
+      +'<div class="card"><div class="card-title">Projetos por cliente <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text3)">— clique num cliente para ver os projetos</span></div><div class="chart-wrap"><canvas id="cCli"></canvas></div></div>'
+    +'</div>'
+    +'<div class="section-title">Horas por projeto <span class="desc">— forecast × realizado</span></div>'
+    +'<div class="card"><div class="chart-wrap" style="height:'+Math.max(220,VIEW.length*34)+'px"><canvas id="cHoras"></canvas></div></div>';
+  // Carga por PM — em HORAS (forecast × realizado), todos os projetos do PM
+  var pms=uniq(VIEW.map(p=>p.pm));
+  var pmFore=pms.map(m=>VIEW.filter(p=>p.pm===m).reduce((s,p)=>s+(p.horasForecast||0),0));
+  var pmReal=pms.map(m=>VIEW.filter(p=>p.pm===m).reduce((s,p)=>s+realizadas(p),0));
+  charts.cPM=new Chart(document.getElementById('cPM'),{type:'bar',
+    data:{labels:pms,datasets:[
+      {label:'Forecast',data:pmFore,backgroundColor:'#B5D4F4',borderRadius:5,barThickness:22},
+      {label:'Realizado',data:pmReal,backgroundColor:'#123E6B',borderRadius:5,barThickness:22}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      onClick:function(evt,els){ if(els&&els.length){ document.getElementById('f-pm').value=pms[els[0].index]; goSec('carteira'); applyFilters(); } },
+      onHover:function(evt,els){ if(evt&&evt.native&&evt.native.target) evt.native.target.style.cursor=(els&&els.length)?'pointer':'default'; },
+      plugins:{legend:{position:'bottom',labels:{font:{size:12,family:'DM Sans'},color:'#6B6860',usePointStyle:true,pointStyle:'rectRounded',padding:12}}},
+      scales:{y:{beginAtZero:true,ticks:{callback:v=>v+'h',font:{size:11},color:'#A5A39E'},grid:{color:'rgba(0,0,0,0.05)'},border:{display:false}},
+              x:{ticks:{font:{size:11},color:'#6B6860'},grid:{display:false},border:{display:false}}}}});
+  // Cliente donut
+  var clis=uniq(VIEW.map(p=>p.cliente));
+  var cliCount=clis.map(c=>VIEW.filter(p=>p.cliente===c).length);
+  var palette=['#2D6A4F','#1D4ED8','#B45309','#6D28D9','#52B788','#DC6803','#0B7285'];
+  charts.cCli=new Chart(document.getElementById('cCli'),{type:'doughnut',
+    data:{labels:clis,datasets:[{data:cliCount,backgroundColor:clis.map((_,i)=>palette[i%palette.length]),borderWidth:0,hoverOffset:4}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'60%',
+      onClick:function(evt,els){ if(els&&els.length){ document.getElementById('f-cliente').value=clis[els[0].index]; goSec('carteira'); applyFilters(); } },
+      onHover:function(evt,els){ if(evt&&evt.native&&evt.native.target) evt.native.target.style.cursor=(els&&els.length)?'pointer':'default'; },
+      plugins:{legend:{position:'right',labels:{font:{size:12,family:'DM Sans'},color:'#6B6860',padding:10,usePointStyle:true,pointStyle:'rectRounded'}}}}});
+  // Horas por projeto (horizontal grouped)
+  var hl=VIEW.map(p=>p.nome);
+  charts.cHoras=new Chart(document.getElementById('cHoras'),{type:'bar',
+    data:{labels:hl,datasets:[
+      {label:'Forecast',data:VIEW.map(p=>p.horasForecast),backgroundColor:'#B5D4F4',borderRadius:4},
+      {label:'Realizado',data:VIEW.map(p=>realizadas(p)),backgroundColor:'#2D6A4F',borderRadius:4}
+    ]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'bottom',labels:{font:{size:12,family:'DM Sans'},color:'#6B6860',usePointStyle:true,pointStyle:'rectRounded',padding:14}}},
+      scales:{x:{ticks:{callback:v=>v+'h',font:{size:11},color:'#A5A39E'},grid:{color:'rgba(0,0,0,0.05)'},border:{display:false}},
+              y:{ticks:{font:{size:11},color:'#6B6860'},grid:{display:false},border:{display:false}}}}});
+}
+
+/* ====== 4. RISCOS ====== */
+function renderRiscos(el){
+  var a=agg(VIEW);
+  // matriz prob x impacto
+  var probs=['alta','media','baixa'], imps=['baixo','medio','alto'];
+  var matrix={}; probs.forEach(pr=>imps.forEach(im=>matrix[pr+'|'+im]=0));
+  VIEW.forEach(p=>p.riscos.forEach(r=>{ var im=r.impacto==='medio'?'medio':r.impacto; matrix[r.prob+'|'+im]=(matrix[r.prob+'|'+im]||0)+1; }));
+  function cellColor(pr,im){
+    var score={baixo:1,medio:2,alto:3}[im]*{baixa:1,media:2,alta:3}[pr];
+    if(score>=6) return '#B91C1C'; if(score>=3) return '#DC6803'; if(score>=2) return '#B45309'; return '#52B788';
+  }
+  var heat='<div class="heat"><div class="axis"></div><div class="axis">Baixo</div><div class="axis">Médio</div><div class="axis">Alto</div>';
+  probs.forEach(pr=>{
+    heat+='<div class="rowlab">'+({alta:'Alta',media:'Média',baixa:'Baixa'})[pr]+'</div>';
+    imps.forEach(im=>{ var n=matrix[pr+'|'+im]||0; heat+='<div class="cell" style="background:'+(n?cellColor(pr,im):'#ECEAE4')+';'+(n?'':'color:#A5A39E')+'"><span class="n">'+n+'</span><span class="c">'+(n===1?'risco':'riscos')+'</span></div>'; });
+  });
+  heat+='</div><div style="font-size:11px;color:var(--text3);margin-top:12px;text-align:center">Probabilidade (linhas) × Impacto (colunas)</div>';
+  // projetos com risco crítico
+  var critProj=VIEW.filter(p=>p.riscos.some(r=>r.prob==='alta'&&r.impacto==='alto'));
+  el.innerHTML =
+    '<div class="kpi-grid" style="grid-template-columns:repeat(4,1fr)">'
+    +kpi('accent','Riscos abertos',a.riscosTot,'no portfólio')
+    +kpi('','Riscos críticos',a.riscosCrit,'alta prob. + alto impacto','t'+(a.riscosCrit===0?'-ok':'-bad'),a.riscosCrit===0?'nenhum':'atenção')
+    +kpi('','Projetos com risco alto',a.projComRiscoAlto,'de '+VIEW.length+' projetos')
+    +kpi('','Projetos críticos',a.criticos,'em estado crítico','t'+(a.criticos===0?'-ok':'-bad'),a.criticos===0?'ok':'ação')
+    +'</div>'
+    +'<div class="section-title">Mapa de calor de riscos <span class="desc">— concentração por probabilidade e impacto</span></div>'
+    +'<div class="grid-2">'
+      +'<div class="card">'+heat+'</div>'
+      +'<div class="card"><div class="card-title">Projetos com risco crítico</div><div>'+(
+        critProj.length? critProj.map(p=>
+          '<div class="ms-row"><div><div class="ms-name"><span class="rag" style="background:'+STATUS[p.status].color+'"></span>'+p.nome+'</div>'
+          +'<div class="ms-meta">'+p.cliente+' · '+p.pm+'</div></div>'
+          +'<div class="ms-when"><span class="badge b-bad"><span class="b-dot"></span>'+p.riscos.filter(r=>r.prob==='alta'&&r.impacto==='alto').length+' crítico(s)</span></div></div>'
+        ).join('') : '<div class="empty" style="padding:24px">Nenhum risco crítico aberto. 🎉</div>'
+      )+'</div></div>'
+    +'</div>'
+    +'<div class="section-title">Mapa de exposição <span class="desc">— tamanho do projeto × saúde (onde está o maior risco)</span></div>'
+    +'<div class="card"><div class="chart-wrap" style="height:340px"><canvas id="cExp"></canvas></div><div style="font-size:11px;color:var(--text3);margin-top:10px;text-align:center">Bolha = horas contratadas · eixo X = SPI (prazo) · eixo Y = consumo de horas (%) · cor = status. Bolha grande à esquerda e no alto = maior exposição.</div></div>';
+  // bubble de exposição — tamanho (horas) × prazo (SPI) × consumo (%)
+  var maxF=Math.max.apply(null,VIEW.map(p=>p.horasForecast||1));
+  var expData=VIEW.map(p=>({x:p.spi,y:(p.horasForecast?Math.round(realizadas(p)/p.horasForecast*100):0),r:6+((p.horasForecast||0)/maxF)*20,nome:p.nome}));
+  charts.cExp=new Chart(document.getElementById('cExp'),{type:'bubble',
+    data:{datasets:[{data:expData,backgroundColor:VIEW.map(p=>STATUS[p.status].color+'CC'),borderColor:VIEW.map(p=>STATUS[p.status].color),borderWidth:1}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:function(ctx){var d=ctx.raw;return d.nome+' · SPI '+d.x.toFixed(2)+' · '+d.y+'% horas';}}}},
+      scales:{x:{title:{display:true,text:'← pior prazo    SPI    melhor →',font:{size:11},color:'#6B6860'},min:0.5,max:1.2,ticks:{font:{size:11},color:'#A5A39E'},grid:{color:'rgba(0,0,0,0.05)'},border:{display:false}},
+              y:{title:{display:true,text:'Consumo de horas (%)',font:{size:11},color:'#6B6860'},beginAtZero:true,suggestedMax:110,ticks:{callback:v=>v+'%',font:{size:11},color:'#A5A39E'},grid:{color:'rgba(0,0,0,0.05)'},border:{display:false}}}}});
+}
+
+/* ====== 5. CARTEIRA ====== */
+var sortKey='status', sortDir=1;
+function renderCarteira(el){
+  var backBtn = filtroAtivo()
+    ? '<button onclick="voltarSaude()" style="display:inline-flex;align-items:center;gap:6px;margin-bottom:14px;padding:7px 14px;font-size:12px;font-weight:500;font-family:inherit;border:1px solid var(--border-md);border-radius:99px;background:var(--surface);color:var(--accent);cursor:pointer">← Voltar à Saúde do portfólio</button>'
+    : '';
+  el.innerHTML = backBtn
+    +'<div class="section-title">Carteira completa <span class="desc">— '+VIEW.length+' projetos · nível portfólio</span></div>'
+    +'<div class="card" style="padding:8px 8px 4px"><table class="tbl" id="ctbl"><thead><tr>'
+    +th('nome','Projeto')+th('cliente','Cliente')+th('pm','PM')+th('status','Status')+th('spi','SPI')
+    +th('pctReal','% Real')+'<th>Horas</th>'+th('goLiveAtual','Go-Live')+'<th>Riscos</th>'
+    +'</tr></thead><tbody id="cbody"></tbody></table></div>';
+  drawRows();
+}
+function th(k,l){ var arrow = sortKey===k?(sortDir>0?' ↑':' ↓'):''; return '<th onclick="sortBy(\''+k+'\')">'+l+arrow+'</th>'; }
+function sortBy(k){ if(sortKey===k) sortDir*=-1; else {sortKey=k; sortDir=1;} renderCarteira(document.getElementById('sections')); }
+function drawRows(){
+  var rows=[...VIEW].sort((a,b)=>{
+    var x=a[sortKey], y=b[sortKey];
+    if(typeof x==='string') return x.localeCompare(y)*sortDir;
+    return (x-y)*sortDir;
+  });
+  document.getElementById('cbody').innerHTML = rows.map(p=>{
+    var st=STATUS[p.status];
+    var consumo=p.horasForecast?Math.round((realizadas(p)/p.horasForecast)*100):0;
+    var hcol=consumo>100?'#B91C1C':consumo>85?'#B45309':'#2D6A4F';
+    var spiCol=p.spi>=1?'var(--accent)':p.spi>=0.85?'var(--warn)':'var(--danger)';
+    var nr=p.riscos.length, ncrit=p.riscos.filter(r=>r.prob==='alta'&&r.impacto==='alto').length;
+    return '<tr>'
+      +'<td style="font-weight:500;max-width:230px">'+p.nome+'</td>'
+      +'<td style="color:var(--text2)">'+p.cliente+'</td>'
+      +'<td style="color:var(--text2)">'+p.pm+'</td>'
+      +'<td><span class="rag" style="background:'+st.color+'"></span><span class="badge '+st.badge+'" style="vertical-align:middle"><span class="b-dot"></span>'+st.lbl+'</span></td>'
+      +'<td class="mono" style="color:'+spiCol+';font-weight:600">'+p.spi.toFixed(2)+'</td>'
+      +'<td><div style="display:flex;align-items:center;gap:7px"><div class="prog"><div class="prog-fill" style="width:'+p.pctReal+'%;background:'+(p.pctReal>=p.pctPlan?'#2D6A4F':'#DC6803')+'"></div></div><span class="mono">'+p.pctReal+'%</span></div></td>'
+      +'<td><span class="mono" style="color:'+hcol+'">'+realizadas(p)+'/'+p.horasForecast+'h</span></td>'
+      +'<td class="mono">'+fmtDate(p.goLiveAtual)+(devioDias(p)>0?' <span style="color:var(--warn);font-size:11px">+'+devioDias(p)+'d</span>':'')+'</td>'
+      +'<td>'+(nr?('<span class="badge '+(ncrit?'b-bad':'b-warn')+'"><span class="b-dot"></span>'+nr+(ncrit?' ('+ncrit+'!)':'')+'</span>'):'<span style="color:var(--text3)">—</span>')+'</td>'
+      +'</tr>';
+  }).join('');
+}
+
+/* ====== 6. ENTENDA OS INDICADORES ====== */
+function renderGlossario(el){
+  function item(nome,desc,faixa){ return '<div style="padding:11px 0;border-bottom:1px solid var(--border)">'
+    +'<div style="font-size:13px;font-weight:600;margin-bottom:3px">'+nome+'</div>'
+    +'<div style="font-size:12px;color:var(--text2);line-height:1.55">'+desc+'</div>'
+    +(faixa?'<div style="font-size:11px;color:var(--text3);margin-top:6px">'+faixa+'</div>':'')+'</div>'; }
+  function dot(c){ return '<span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:'+c+';margin-right:6px;vertical-align:middle"></span>'; }
+  el.innerHTML =
+    '<div style="display:flex;align-items:center;gap:18px;padding:14px 18px;background:var(--blue-l);border-radius:var(--rl);font-size:13px;color:var(--blue);margin-bottom:22px;flex-wrap:wrap">'
+    +'<span style="font-weight:600">Como ler os semáforos:</span><span>🟢 bom</span><span>🟡 atenção</span><span>🔴 crítico</span></div>'
+    +'<div class="grid-2">'
+    +'<div class="card"><div class="card-title">⏱️ Prazo</div>'
+      +item('SPI — Índice de Desempenho de Prazo','Compara o que já foi entregue com o que estava planejado para hoje. Diz se o projeto está adiantado ou atrasado.','🟢 ≥ 1,00 no ritmo · 🟡 0,85–1,00 atenção · 🔴 &lt; 0,85 atraso crítico. Ex.: 0,90 = andando a 90% do ritmo planejado.')
+      +item('Desvio de prazo','Diferença, em dias, entre o go-live atual e a data planejada originalmente (baseline). "+7d" = atrasou 7 dias.')
+      +item('% Plan × % Real','% Plan = quanto deveria estar pronto hoje. % Real = quanto está pronto de fato. Real abaixo do Plan indica atraso.')
+      +item('Go-Live','Data de entrada em produção. Mostramos a baseline (original) e a atual (replanejada).')
+    +'</div>'
+    +'<div class="card"><div class="card-title">💰 Esforço &amp; Custo</div>'
+      +item('CPI — Índice de Custo/Esforço','Compara o quanto foi entregue com as horas gastas. Diz se estamos usando as horas de forma eficiente.','🟢 ≥ 1,00 eficiente · 🟡 0,85–1,00 leve estouro · 🔴 &lt; 0,85 estouro crítico')
+      +item('EAC — Projeção no término','Estima quantas horas / quanto custo o projeto terá no fim, mantido o ritmo atual. Comparado ao contratado, antecipa estouro.')
+      +item('Consumo / Saldo de horas','Consumo = % das horas contratadas já usadas. Saldo = horas contratadas − realizadas (negativo = estourou o contratado).')
+      +item('Projetos estourando','Quantos projetos já passaram das horas contratadas.')
+    +'</div>'
+    +'<div class="card"><div class="card-title">⚠️ Risco</div>'
+      +item('Riscos abertos / críticos','Abertos = riscos ativos na carteira. Críticos = alta probabilidade E alto impacto — os que mais ameaçam.')
+      +item('Mapa de calor','Distribui os riscos por probabilidade (linhas) × impacto (colunas). O canto de alta+alto é a zona crítica.')
+      +item('Mapa de exposição','Cada bolha é um projeto: tamanho = horas contratadas · eixo X = SPI (prazo) · eixo Y = consumo de horas. Bolha grande, à esquerda e no alto = maior exposição financeira.')
+    +'</div>'
+    +'<div class="card"><div class="card-title">🚦 Status &amp; Saúde</div>'
+      +item('Status do projeto',dot('#2D6A4F')+'No prazo &nbsp; '+dot('#B45309')+'Em risco &nbsp; '+dot('#DC6803')+'Atrasado &nbsp; '+dot('#B91C1C')+'Crítico &nbsp; '+dot('#1D4ED8')+'Concluído')
+      +item('Saúde geral da carteira','O semáforo do topo combina as três dimensões (Prazo, Esforço e Risco) e assume a pior delas: se qualquer uma estiver crítica, a carteira aparece crítica.')
+      +item('SPI médio do portfólio','Média dos SPIs de todos os projetos, ponderada pelo tamanho (horas) — projetos maiores pesam mais no resultado.')
+    +'</div>'
+    +'</div>';
+}
+
+/* ====== UI HELPERS ====== */
+function kpi(cls,label,value,sub,tagCls,tagLbl){
+  return '<div class="kpi '+cls+'"><div class="kpi-label">'+label+'</div><div class="kpi-value">'+value+'</div>'
+    +(tagCls?'<div><span class="kpi-tag '+tagCls+'">'+tagLbl+'</span></div>':(sub?'<div class="kpi-sub">'+sub+'</div>':''))
+    +(tagCls&&sub?'<div class="kpi-sub">'+sub+'</div>':'')+'</div>';
+}
+function barOpts(noLegend){
+  return {responsive:true,maintainAspectRatio:false,plugins:{legend:{display:!noLegend}},
+    scales:{y:{beginAtZero:true,ticks:{precision:0,font:{size:11},color:'#A5A39E'},grid:{color:'rgba(0,0,0,0.05)'},border:{display:false}},
+            x:{ticks:{font:{size:11},color:'#6B6860'},grid:{display:false},border:{display:false}}}};
+}
+
+function dadosExport(){
+  var head=['Projeto','Cliente','PM','Status','SPI','% Real','% Plan','Horas Realizadas','Horas Forecast','Go-Live Baseline','Go-Live Atual','Riscos'];
+  var rows=VIEW.map(p=>[p.nome,p.cliente,p.pm,STATUS[p.status].lbl,Number(p.spi),p.pctReal,p.pctPlan,realizadas(p),p.horasForecast,fmtDate(p.goLiveBaseline),fmtDate(p.goLiveAtual),p.riscos.length]);
+  return [head].concat(rows);
+}
+function exportExcel(){
+  function build(){
+    try{
+      var ws=XLSX.utils.aoa_to_sheet(dadosExport());
+      ws['!cols']=[{wch:34},{wch:20},{wch:12},{wch:12},{wch:7},{wch:8},{wch:8},{wch:16},{wch:15},{wch:16},{wch:14},{wch:8}];
+      var wb=XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb,ws,'Portfólio');
+      XLSX.writeFile(wb,'portfolio-obliant.xlsx');
+    }catch(e){ alert('Erro ao gerar o Excel: '+e.message); }
+  }
+  if(window.XLSX){ build(); return; }
+  var s=document.createElement('script');
+  s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+  s.onload=build;
+  s.onerror=function(){ alert('Não foi possível carregar o gerador de Excel. Verifique a conexão à internet e tente de novo.'); };
+  document.head.appendChild(s);
+}
+
+// tela de início → painel
+function enterApp(){
+  document.getElementById('start').classList.add('hidden');
+  document.getElementById('app').style.display='flex';
+  init();
+}
+</script>
+</body>
+</html>

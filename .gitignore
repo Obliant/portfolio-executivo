@@ -1,0 +1,7 @@
+# Local Netlify folder
+.netlify
+deploy/
+netlify.toml
+
+# Source copy kept locally, not versioned (index.html is canonical)
+Project_Track_-_Dashboard_Executivo (5).html
